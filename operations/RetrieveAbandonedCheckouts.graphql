@@ -1,0 +1,12 @@
+# Retrieves a list of abandoned checkouts including their IDs, recovery URLs, and total prices.
+query RetrieveAbandonedCheckouts {
+  abandonedCheckouts(first: 10) {
+    edges {
+      node {
+        id
+        abandonedCheckoutUrl
+        totalPriceSet
+      }
+    }
+  }
+}

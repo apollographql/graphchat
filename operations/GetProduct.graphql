@@ -1,0 +1,9 @@
+# Retrieves the details of a product by its ID, including the title, description, and price.
+query GetProduct($productId: ID!) {
+  product(id: $productId) {
+    id
+    title
+    description
+    price
+  }
+}
