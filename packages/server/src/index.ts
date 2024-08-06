@@ -74,7 +74,7 @@ const findContent = makeDefaultFindContent({
     // on the embedding model you use. We've found 0.9 works well
     // for OpenAI's text-embedding-ada-02 model for most use cases,
     // but you may want to adjust this value if you're using a different model.
-    minScore: 0.9,
+    minScore: 0.1,
   },
 });
 
