@@ -1,4 +1,4 @@
-import type { Tool } from "mongodb-chatbot-server";
+import type { Tool, CallToolResponse } from "mongodb-chatbot-server";
 
 export const persistedQueryTool: Tool = {
   definition: {
@@ -19,22 +19,61 @@ export const persistedQueryTool: Tool = {
       required: ["id"],
     },
   },
+
   async call({ functionArgs: { id, variables } }: {
     functionArgs: {
       id: string;
       variables: Record<string, any>;
     };
-  }) {
-    // For now, just log the call and return a placeholder response
+  }): Promise<CallToolResponse> {
     console.log(`Fetching persisted query with id ${id} and variables ${
       JSON.stringify(variables, null, 2)
     }`);
-    return {
-      toolCallMessage: {
-        role: "function",
-        name: "persistedQuery",
-        content: "Show the function invocation with id and variables, and explain that the actual fetching still needs to be hooked up",
+
+    const body: {
+      extensions: Record<string, any>;
+      variables?: Record<string, any>;
+    } = {
+      extensions: {
+        persistedQuery: {
+          version: 1,
+          sha256Hash: id,
+        },
       },
     };
+    if (variables) {
+      body.variables = variables;
+    }
+
+    return await fetch("http://127.0.0.1:4000", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    }).then(
+      response => response.json()
+    ).then(
+      result => {
+        console.log(`Got persisted query result: ${JSON.stringify(result, null, 2)}`);
+        return {
+          toolCallMessage: {
+            role: "function",
+            name: "persistedQuery",
+            content: JSON.stringify(result, null, 2),
+          },
+        };
+      },
+      error => {
+        console.error(`Error fetching persisted query: ${error.message}`);
+        return {
+          toolCallMessage: {
+            role: "function",
+            name: "persistedQuery",
+            content: `Error fetching persisted query: ${error.message}`,
+          },
+        };
+      },
+    );
   }
 };
