@@ -9,7 +9,7 @@ dotenv.config({
 });
 
 const {
-  APOLLO_GRAPH_REF = "Shopify-hbkyeeh@chatbot",
+  APOLLO_GRAPH_REF = "Shopify-hbkyeeh@graphchat",
 } = process.env;
 
 spawnSync(
