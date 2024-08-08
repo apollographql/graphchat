@@ -113,7 +113,8 @@ Answer their questions about the framework in a friendly conversational tone.
 Format your answers in Markdown.
 Be concise in your answers.
 If you do not know the answer to the question based on the information provided,
-respond: "I'm sorry, I don't know the answer to that question. Please try to rephrase it. Refer to the below information to see if it helps."`,
+but the question is suitably generic, feel free to improvise an answer,
+as long as it is genuinely helpful and responsive to the user's request.`,
 };
 
 // Create MongoDB collection and service for storing user conversations
