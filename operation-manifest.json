@@ -15,10 +15,10 @@
       "body": "# Fetches the orders associated with a specific customer, including order IDs, total prices, and statuses.\nquery CustomerOrders($customerId: ID!) {\n  customer(id: $customerId) {\n    orders(first: 10) {\n      edges {\n        node {\n          id\n          totalPrice\n          status\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}"
     },
     {
-      "id": "a0152a1bedf9e3d897452debbfb69f316688935bcab71315013537aadf65a4a5",
+      "id": "2acc1fd569e109bb7a786bbf80aa4f41f9e595e5b9381cd5143d1e42966470c0",
       "name": "GetProduct",
       "type": "query",
-      "body": "# Retrieves the details of a product by its ID, including the title, description, and price.\nquery GetProduct($productId: ID!) {\n  product(id: $productId) {\n    id\n    title\n    description\n    price\n    __typename\n  }\n}"
+      "body": "# Retrieves the details of a product by its ID, including the title, description, and price range.\nquery GetProduct($productId: ID!) {\n  product(id: $productId) {\n    id\n    title\n    description\n    priceRangeV2 {\n      maxVariantPrice {\n        amount\n        currencyCode\n        __typename\n      }\n      minVariantPrice {\n        amount\n        currencyCode\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}"
     },
     {
       "id": "d454f6ce1d77f2c739e65a930f8627a1bc2f2a140d492321ccfb15332c7e4229",

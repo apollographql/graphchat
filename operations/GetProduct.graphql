@@ -1,9 +1,18 @@
-# Retrieves the details of a product by its ID, including the title, description, and price.
+# Retrieves the details of a product by its ID, including the title, description, and price range.
 query GetProduct($productId: ID!) {
   product(id: $productId) {
     id
     title
     description
-    price
+    priceRangeV2 {
+      maxVariantPrice {
+        amount
+        currencyCode
+      }
+      minVariantPrice {
+        amount
+        currencyCode
+      }
+    }
   }
 }

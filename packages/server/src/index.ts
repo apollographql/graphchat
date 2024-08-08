@@ -119,6 +119,10 @@ use the 'persistedQuery' tool to fetch data for the query. Always use page.metad
 The value of the "variables" argument should be a JSON object whose keys match the declared variable names in the operation, but those names should not include the '$' prefix.
 Use the result of the 'persistedQuery' tool to answer the user's question, remembering that the result may explain a problem that occurred, or contain instructions for you to follow, if the data could not be fetched for any reason.
 
+If you receive a persistedQuery result that indicates an error, try at most once to adjust the arguments to fix the problem.
+If other persisted queries are available, try executing another query that may be relevant to the user's request.
+Do not try any query with the same arguments more than once, and do not try any query more than twice. Try at most three different queries in total.
+
 When calling any tool such as 'persistedQuery', the arguments must be valid JSON, without newlines or other extraneous characters.
 Format your other (non-tool-calling) answers in Markdown, and make them as concise as possible without being unhelpful.
 
