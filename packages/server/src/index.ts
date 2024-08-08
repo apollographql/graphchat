@@ -73,7 +73,7 @@ const findContent = makeDefaultFindContent({
   embedder,
   store: embeddedContentStore,
   findNearestNeighborsOptions: {
-    k: 20,
+    k: 10,
     path: "embedding",
     indexName: VECTOR_SEARCH_INDEX_NAME,
     // Note: you may want to adjust the minScore depending
