@@ -131,3 +131,6 @@ dist
 
 # ts build
 build/
+
+# Binary file downloaded automatically by scripts/router.ts
+scripts/router

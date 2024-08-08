@@ -1,0 +1,13 @@
+headers:
+  subgraphs:
+    monolith: # Header rules for just the products subgraph
+      request:
+        - insert:
+            name: "X-Shopify-Access-Token"
+            value: ${env.SHOPIFY_ACCESS_TOKEN}
+persisted_queries:
+  enabled: true
+  safelist:
+    enabled: true
+apq:
+  enabled: false
