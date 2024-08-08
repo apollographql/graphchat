@@ -18,6 +18,7 @@ import { OpenAIClient, OpenAIKeyCredential } from "@azure/openai";
 import path from "path";
 import { loadEnvVars } from "./loadEnvVars";
 import { randomTool } from "./randomTool";
+import { persistedQueryTool } from "./persistedQueryTool";
 
 // Load project environment variables
 const dotenvPath = path.join(__dirname, "..", "..", "..", ".env"); // .env at project root
@@ -42,7 +43,10 @@ const llm = makeOpenAiChatLlm({
     temperature: 0,
     maxTokens: 500,
   },
-  tools: [randomTool],
+  tools: [
+    randomTool,
+    persistedQueryTool,
+  ],
 });
 
 // MongoDB data source for the content used in RAG.
@@ -111,10 +115,14 @@ const systemPrompt: SystemPrompt = {
 If the user asks a question about the MongoDB Chatbot Framework, use the provided documentation pages to answer the question in a friendly conversational tone.
 
 If the user asks a question pertaining to GraphQL data, and your context includes a page with page.format == "graphql" and page.sourceName == "persisted-queries",
-be sure to include the value of the page.body field (a GraphQL operation) in your response, along with the page.metadata.id (a hexadecimal hash).
+use the 'persistedQuery' tool to fetch data for the query. Always use page.metadata.id as the "id" argument, as well as any "variables" that are required or important based on the user's request.
+The value of the "variables" argument should be a JSON object whose keys match the declared variable names in the operation, but those names should not include the '$' prefix.
+Use the result of the 'persistedQuery' tool to answer the user's question, remembering that the result may explain a problem that occurred, or contain instructions for you to follow, if the data could not be fetched for any reason.
 
-If the metadata.requiredVariables array is not empty, either infer appropriate values for those variables based on the types declared in the operation, or ask the user for the values of those variables.
-Once you know the values of the required variables, display them to the user for approval. This may take multiple back-and-forth messages.
+When the page.metadata.requiredVariables array is not empty, either infer appropriate values for those variables based on the types declared in the operation, or ask the user for the values of those variables.
+In some cases, the appropriate values of some variables may be found in previous messages in the conversation, sent either by the user or by the assistant (you). Use those values if they seem relevant.
+Even when a variable is not required, or has a default value, it may nevertheless be helpful to specify an explicit value based on the user's request. For example, when the user asks for "all" of a particular type of data,
+and the query has a $limit variable for the corresponding list field, you may want to set $limit to a larger value. Ask the user for their desired values, if you have any doubt.
 
 If you do not know the answer to the question based on the information provided, but the question is suitably generic, feel free to improvise an answer, as long as it is genuinely helpful and responsive to the user's request.
 
