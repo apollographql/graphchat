@@ -8,6 +8,7 @@ import { standardChunkFrontMatterUpdater } from "mongodb-rag-ingest/embed";
 import path from "path";
 import { loadEnvVars } from "./loadEnvVars";
 import { mongoDbChatbotFrameworkDocsDataSourceConstructor } from "./mongodbChatbotFrameworkDataSource";
+import { persistedQueryDataSource } from "./persistedQueryDataSource";
 
 // Load project environment variables
 const dotenvPath = path.join(__dirname, "..", "..", "..", ".env"); // .env at project root
@@ -52,10 +53,8 @@ export default {
     transform: standardChunkFrontMatterUpdater,
   }),
   // Add data sources here
-  dataSources: async () => {
-    const mongodbChatbotFrameworkSource =
-      await mongoDbChatbotFrameworkDocsDataSourceConstructor();
-
-    return [mongodbChatbotFrameworkSource];
-  },
+  dataSources: async () => [
+    await mongoDbChatbotFrameworkDocsDataSourceConstructor(),
+    await persistedQueryDataSource(),
+  ],
 } satisfies Config;
