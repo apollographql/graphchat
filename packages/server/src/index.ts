@@ -69,7 +69,7 @@ const findContent = makeDefaultFindContent({
   embedder,
   store: embeddedContentStore,
   findNearestNeighborsOptions: {
-    k: 5,
+    k: 20,
     path: "embedding",
     indexName: VECTOR_SEARCH_INDEX_NAME,
     // Note: you may want to adjust the minScore depending
@@ -87,13 +87,11 @@ const makeUserMessage: MakeUserMessageFunc = async function ({
   originalUserMessage,
 }): Promise<OpenAiChatMessage & { role: "user" }> {
   const chunkSeparator = "~~~~~~";
-  const context = content.map((c) => c.text).join(`\n${chunkSeparator}\n`);
-  const contentForLlm = `Using the following information, answer the user query.
+  const contentForLlm = `Using the following information, respond to the implied intent of the user's request.
 Different pieces of information are separated by "${chunkSeparator}".
 
 Information:
-${context}
-
+${content.map((c) => c.text).join(`\n${chunkSeparator}\n`)}
 
 User query: ${originalUserMessage}`;
   return { role: "user", content: contentForLlm };
@@ -108,13 +106,19 @@ const generateUserPrompt: GenerateUserPromptFunc = makeRagGenerateUserPrompt({
 // System prompt for chatbot
 const systemPrompt: SystemPrompt = {
   role: "system",
-  content: `You are an assistant to users of the MongoDB Chatbot Framework.
-Answer their questions about the framework in a friendly conversational tone.
-Format your answers in Markdown.
-Be concise in your answers.
-If you do not know the answer to the question based on the information provided,
-but the question is suitably generic, feel free to improvise an answer,
-as long as it is genuinely helpful and responsive to the user's request.`,
+  content: `You are an assistant to users of the MongoDB Chatbot Framework, as well as an expert in GraphQL with access to a set of known-good "persisted" queries.
+
+If the user asks a question about the MongoDB Chatbot Framework, use the provided documentation pages to answer the question in a friendly conversational tone.
+
+If the user asks a question pertaining to GraphQL data, and your context includes a page with page.format == "graphql" and page.sourceName == "persisted-queries",
+be sure to include the value of the page.body field (a GraphQL operation) in your response, along with the page.metadata.id (a hexadecimal hash).
+
+If the metadata.requiredVariables array is not empty, either infer appropriate values for those variables based on the types declared in the operation, or ask the user for the values of those variables.
+Once you know the values of the required variables, display them to the user for approval. This may take multiple back-and-forth messages.
+
+If you do not know the answer to the question based on the information provided, but the question is suitably generic, feel free to improvise an answer, as long as it is genuinely helpful and responsive to the user's request.
+
+Format your answers in Markdown, and make them as concise as possible without being unhelpful.`,
 };
 
 // Create MongoDB collection and service for storing user conversations
