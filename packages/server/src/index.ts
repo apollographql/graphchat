@@ -17,6 +17,7 @@ import {
 import { OpenAIClient, OpenAIKeyCredential } from "@azure/openai";
 import path from "path";
 import { loadEnvVars } from "./loadEnvVars";
+import { randomTool } from "./randomTool";
 
 // Load project environment variables
 const dotenvPath = path.join(__dirname, "..", "..", "..", ".env"); // .env at project root
@@ -41,6 +42,7 @@ const llm = makeOpenAiChatLlm({
     temperature: 0,
     maxTokens: 500,
   },
+  tools: [randomTool],
 });
 
 // MongoDB data source for the content used in RAG.
