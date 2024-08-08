@@ -130,6 +130,10 @@ const config: AppConfig = {
     conversations,
     generateUserPrompt,
     systemPrompt,
+    async filterPreviousMessages(conversation) {
+      return conversation.messages;
+    },
+    maxUserMessagesInConversation: Infinity,
   },
   maxRequestTimeoutMs: 30000,
   serveStaticSite: true,
