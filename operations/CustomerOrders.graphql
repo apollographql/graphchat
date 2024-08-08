@@ -5,8 +5,15 @@ query CustomerOrders($customerId: ID!) {
       edges {
         node {
           id
-          totalPrice
-          status
+          totalPriceSet {
+            shopMoney {
+              amount
+              currencyCode
+            }
+          }
+          fulfillments {
+            status
+          }
         }
       }
     }

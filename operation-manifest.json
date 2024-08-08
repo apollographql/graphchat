@@ -9,10 +9,10 @@
       "body": "# Fetches the line items for a specific abandoned checkout, including custom attributes and discounted total prices.\nquery CheckoutLineItems($checkoutId: ID!) {\n  abandonedCheckout(id: $checkoutId) {\n    lineItems(first: 10) {\n      edges {\n        node {\n          id\n          customAttributes {\n            key\n            value\n            __typename\n          }\n          discountedTotalPriceSet\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}"
     },
     {
-      "id": "e31801e9ca390dea87860919ed8355e166d090ca9c7d122377aa56dbb1475d0d",
+      "id": "c1a598b9f350bfacc65382b51232543e463645438e4fc1ddb8ee68b88a4aec30",
       "name": "CustomerOrders",
       "type": "query",
-      "body": "# Fetches the orders associated with a specific customer, including order IDs, total prices, and statuses.\nquery CustomerOrders($customerId: ID!) {\n  customer(id: $customerId) {\n    orders(first: 10) {\n      edges {\n        node {\n          id\n          totalPrice\n          status\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}"
+      "body": "# Fetches the orders associated with a specific customer, including order IDs, total prices, and statuses.\nquery CustomerOrders($customerId: ID!) {\n  customer(id: $customerId) {\n    orders(first: 10) {\n      edges {\n        node {\n          id\n          totalPriceSet {\n            shopMoney {\n              amount\n              currencyCode\n              __typename\n            }\n            __typename\n          }\n          fulfillments {\n            status\n            __typename\n          }\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}"
     },
     {
       "id": "2acc1fd569e109bb7a786bbf80aa4f41f9e595e5b9381cd5143d1e42966470c0",
