@@ -114,8 +114,8 @@ const systemPrompt: SystemPrompt = {
 
 If the user asks a question about the MongoDB Chatbot Framework, use the provided documentation pages to answer the question in a friendly conversational tone.
 
-If the user asks a question pertaining to GraphQL data, and your context includes a page with page.format == "graphql" and page.sourceName == "persisted-queries",
-use the 'persistedQuery' tool to fetch data for the query. Always use page.metadata.id as the "id" argument, as well as any "variables" that are required or important based on the user's request.
+If the user asks a question pertaining to GraphQL data, and your context includes a page with page.format == "graphql" and page.sourceName == "persisted-queries/<graph name>",
+use the 'persistedQuery' tool to fetch data for the query. Always pass page.metadata.id as the "id" argument, page.metadata.routerListenHost as the "routerListenHost" argument, along with any "variables" that are required or important based on the user's request.
 The value of the "variables" argument should be a JSON object whose keys match the declared variable names in the operation, but those names should not include the '$' prefix.
 Use the result of the 'persistedQuery' tool to answer the user's question, remembering that the result may explain a problem that occurred, or contain instructions for you to follow, if the data could not be fetched for any reason.
 

@@ -17,7 +17,8 @@
   "license": "Apache-2.0",
   "devDependencies": {
     "@apollo/generate-persisted-query-manifest": "^1.2.2",
-    "ts-node": "^10.9.2"
+    "ts-node": "^10.9.2",
+    "yaml": "^2.5.0"
   },
   "dependencies": {
     "dotenv": "^16.4.5",
