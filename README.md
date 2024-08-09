@@ -49,17 +49,17 @@ persisted query list you want to use
 
 1. Create a service API key in GraphOS for the  graph you want to see this with
 2. Run setup script with `GRAPHOS_API_KEY`, the script will then:
-  a. Create a `graphchat` variant on that graph
-  b. Copy the subgraphs (schema and URL) from a variant in the following order: prod/production/main/current
-  c. Create a persisted query list associated with the `graphchat` variant
+   * Create a `graphchat` variant on that graph
+   * Copy the subgraphs (schema and URL) from a variant in the following order: prod/production/main/current
+   * Create a persisted query list associated with the `graphchat` variant
 
 ### Manually:
 
 1. Navigate to the graph you want to try
 2. Create a new variant with your desired name
 3. Copy over your subgraphs from whatever is your main or production variant.
-  a. You can do this in the Subgraphs tab with the “Add Subgraph” button
-  b. You will need to paste in the URL and schema for each subgraph you add
+   * You can do this in the Subgraphs tab with the “Add Subgraph” button
+   * You will need to paste in the URL and schema for each subgraph you add
 
 ## Setting up `.env` files
 
