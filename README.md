@@ -109,3 +109,23 @@ npm run dev
 ## Deploying to production
 
 TODO
+
+# Licensing
+
+## Overview
+GraphChat is an open-source project developed by Apollo Graph, Inc. that includes original code and modifications to the MongoDB Chatbot Framework.
+
+
+## License Details
+
+The entire project (including all original work by Apollo Graph, Inc. and code derived from the MongoDB Chatbot Framework) is licensed under the Apache License, Version 2.0. This license applies to all files in this repository. You can read the full text of the Apache License, Version 2.0 [here](https://github.com/mongodb/chatbot).
+
+Acknowledgment of Original Work. This project includes code derived from the MongoDB Chatbot Framework, originally developed by MongoDB, Inc. The original MongoDB Chatbot Framework is also licensed under the Apache License, Version 2.0 and can be found [here](https://github.com/mongodb/chatbot).
+
+## Notice
+
+Please note that this project includes a NOTICE file, as required by the Apache License, Version 2.0. The NOTICE file acknowledges the original work by MongoDB, Inc. and details the contributions by Apollo Graph, Inc.
+
+## Disclaimer 
+
+Unless required by applicable law or agreed to in writing, software distributed under this project is provided on an “AS IS” basis, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License, Version 2.0 for more details.
