@@ -17,6 +17,8 @@ import {
 import { OpenAIClient, OpenAIKeyCredential } from "@azure/openai";
 import path from "path";
 import { loadEnvVars } from "./loadEnvVars";
+import { randomTool } from "./randomTool";
+import { persistedQueryTool } from "./persistedQueryTool";
 
 // Load project environment variables
 const dotenvPath = path.join(__dirname, "..", "..", "..", ".env"); // .env at project root
@@ -41,6 +43,10 @@ const llm = makeOpenAiChatLlm({
     temperature: 0,
     maxTokens: 500,
   },
+  tools: [
+    randomTool,
+    persistedQueryTool,
+  ],
 });
 
 // MongoDB data source for the content used in RAG.
@@ -67,14 +73,14 @@ const findContent = makeDefaultFindContent({
   embedder,
   store: embeddedContentStore,
   findNearestNeighborsOptions: {
-    k: 5,
+    k: 10,
     path: "embedding",
     indexName: VECTOR_SEARCH_INDEX_NAME,
     // Note: you may want to adjust the minScore depending
     // on the embedding model you use. We've found 0.9 works well
     // for OpenAI's text-embedding-ada-02 model for most use cases,
     // but you may want to adjust this value if you're using a different model.
-    minScore: 0.9,
+    minScore: 0.1,
   },
 });
 
@@ -85,13 +91,11 @@ const makeUserMessage: MakeUserMessageFunc = async function ({
   originalUserMessage,
 }): Promise<OpenAiChatMessage & { role: "user" }> {
   const chunkSeparator = "~~~~~~";
-  const context = content.map((c) => c.text).join(`\n${chunkSeparator}\n`);
-  const contentForLlm = `Using the following information, answer the user query.
+  const contentForLlm = `Using the following information, respond to the implied intent of the user's request.
 Different pieces of information are separated by "${chunkSeparator}".
 
 Information:
-${context}
-
+${content.map((c) => c.text).join(`\n${chunkSeparator}\n`)}
 
 User query: ${originalUserMessage}`;
   return { role: "user", content: contentForLlm };
@@ -106,12 +110,33 @@ const generateUserPrompt: GenerateUserPromptFunc = makeRagGenerateUserPrompt({
 // System prompt for chatbot
 const systemPrompt: SystemPrompt = {
   role: "system",
-  content: `You are an assistant to users of the MongoDB Chatbot Framework.
-Answer their questions about the framework in a friendly conversational tone.
-Format your answers in Markdown.
-Be concise in your answers.
-If you do not know the answer to the question based on the information provided,
-respond: "I'm sorry, I don't know the answer to that question. Please try to rephrase it. Refer to the below information to see if it helps."`,
+  content: `You are an assistant to users of the MongoDB Chatbot Framework, as well as an expert in GraphQL with access to a set of known-good "persisted" queries.
+
+If the user asks a question about the MongoDB Chatbot Framework, use the provided documentation pages to answer the question in a friendly conversational tone.
+
+If the user asks a question pertaining to GraphQL data, and your context includes a page with page.format == "graphql" and page.sourceName == "persisted-queries/<graph name>",
+use the 'persistedQuery' tool to fetch data for the query. Always pass page.metadata.id as the "id" argument, page.metadata.routerListenHost as the "routerListenHost" argument, along with any "variables" that are required or important based on the user's request.
+The value of the "variables" argument should be a JSON object whose keys match the declared variable names in the operation, but those names should not include the '$' prefix.
+Use the result of the 'persistedQuery' tool to answer the user's question, remembering that the result may explain a problem that occurred, or contain instructions for you to follow, if the data could not be fetched for any reason.
+
+When the page.metadata.requiredVariables array is not empty, either infer appropriate values for those variables based on the types declared in the operation, or ask the user for the values of those variables.
+In some cases, the appropriate values of some variables may be found in previous messages in the conversation, sent either by the user or by the assistant (you). Use those values if they seem relevant.
+Even when a variable is not required, or has a default value, it may nevertheless be helpful to specify an explicit value based on the user's request. For example, when the user asks for "all" of a particular type of data,
+and the query has a $limit variable for the corresponding list field, you may want to set $limit to a larger value. Ask the user for their desired values, if you have any doubt.
+
+If the user asks for information about a specific item, but you don't know the item's ID, try using a persisted query that fetches a list of items of that type, then examine the reults to find the ID of the desired item.
+Whenever possible, perform this search before you respond, and do not ask the user for the ID of the item, as they are unlikely to know such information.
+
+If you receive a persistedQuery result that indicates an error, explain the problem in non-technical terms to the user, and ask for further instructions.
+However, if you can fix the error by adjusting the query variables, do so before asking the user for further instructions.
+If other persisted queries are available, you may try executing another query that may be relevant to the user's request.
+Keep the user informed about what you're doing, why you're doing it, and what you're learning from the results.
+
+When calling any tool such as 'persistedQuery', the arguments must be valid JSON, without newlines or other extraneous characters.
+Format your other (non-tool-calling) answers in Markdown, and make them as concise as possible without being unhelpful.
+
+If you do not know the answer to the question based on the information provided, but the question is suitably generic, feel free to improvise an answer, as long as it is genuinely helpful and responsive to the user's request.
+If you cannot provide a helpful answer, you may ask the user for additional information, or simply state you cannot find the information they are looking for.`,
 };
 
 // Create MongoDB collection and service for storing user conversations
@@ -128,6 +153,10 @@ const config: AppConfig = {
     conversations,
     generateUserPrompt,
     systemPrompt,
+    async filterPreviousMessages(conversation) {
+      return conversation.messages;
+    },
+    maxUserMessagesInConversation: Infinity,
   },
   maxRequestTimeoutMs: 30000,
   serveStaticSite: true,

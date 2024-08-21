@@ -1,0 +1,21 @@
+# Fetches the orders associated with a specific customer, including order IDs, total prices, and statuses.
+query CustomerOrders($customerId: ID!) {
+  customer(id: $customerId) {
+    orders(first: 10) {
+      edges {
+        node {
+          id
+          totalPriceSet {
+            shopMoney {
+              amount
+              currencyCode
+            }
+          }
+          fulfillments {
+            status
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,17 @@
+# Fetches the line items for a specific abandoned checkout, including custom attributes and discounted total prices.
+query CheckoutLineItems($checkoutId: ID!) {
+  abandonedCheckout(id: $checkoutId) {
+    lineItems(first: 10) {
+      edges {
+        node {
+          id
+          customAttributes {
+            key
+            value
+          }
+          discountedTotalPriceSet
+        }
+      }
+    }
+  }
+}

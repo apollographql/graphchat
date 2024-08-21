@@ -1,52 +1,111 @@
-# Apollo GraphChat
+# Apollo GraphChat: multi-source persisted-query-aware AI chatbot
 
-GraphChat is a working example of connecting a chatbot to your APIs using GraphQL queries. It was originally forked from the [MongoDB Chatbot Framework](https://github.com/mongodb/chatbot) because it allowed us to get quickly started and focus on the API access for the chatbot.  
+The Apollo GraphChat project is a chatbot that understands GraphQL schemas and
+queries, and in particular knows about a given set of [persisted
+queries](https://www.apollographql.com/docs/kotlin/advanced/persisted-queries/),
+which are pre-approved operations that can be executed against an Apollo
+Router-based gateway.
 
-# Documentation
+As a demonstration, this project includes relevant configuration for a
+Shopify-esque API, but you can add additional graphs in the [`graphs/`](graphs/)
+directory, and the chatbot will be able to answer questions about all of them at
+once, potentially combining data from multiple sources.
 
-To learn how to use this framework, refer to the Apollo Tutorial course with complete instructions to re-create. 
+GraphChat builds on the excellent [MongoDB chatbot
+framework](https://github.com/mongodb/chatbot), using [tool
+calling](https://mongodb.github.io/chatbot/server/tools/) to execute persisted
+queries against the various GraphQL APIs. As a useful remnant of those
+beginnings, the chatbot also has knowledge of the chatbot framework running
+behind the scenes, and can answer questions about extending or modifying the
+behavior of that framework.
 
-If you want to get started quickly with this project and play around with it yourself, continue to the quickstart.
+## Prerequisites
 
-# Quickstart
+- [Node.js](https://nodejs.org/en/download/) (v14 or later)
+- [npm](https://www.npmjs.com/get-npm) (comes with Node.js)
+- [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) account
+- [OpenAI API key](https://platform.openai.com/api-keys)
 
-## Setup GraphOS
-To try the chatbot dev kit, we’ll create a new contract variant that we can associate a hand-crafted persisted query list with. You may already have a persisted query list you want to use
+## Installing the project
 
-With Script  
+```bash
+git clone https://github.com/apollographql/graphchat.git
+cd graphchat
+npm install
+```
+
+## Setting up a MongoDB Atlas vector store
+
+Instructions for setting up MongoDB Atlas can be found in their
+[documentation](https://mongodb.github.io/chatbot/quick-start).
+
+## Setting up GraphOS
+
+To try the chatbot dev kit, we’ll create a new contract variant that we can
+associate a hand-crafted persisted query list with. You may already have a
+persisted query list you want to use
+
+### With script:
+
 1. Create a service API key in GraphOS for the  graph you want to see this with
-2. Run setup script with GRAPHOS_API_KEY, the script will then:
-  a. Create a `chatbot` variant on that graph
-  b. Copy the subgraphs (schema and URL) from a variant in the following order: prod/production/main/current
-  c. Create a persisted query list associated with the `chatbot` variant
+2. Run setup script with `GRAPHOS_API_KEY`, the script will then:
+   * Create a `graphchat` variant on that graph
+   * Copy the subgraphs (schema and URL) from a variant in the following order: prod/production/main/current
+   * Create a persisted query list associated with the `graphchat` variant
 
-Manually
-1. Navigate to the graph you want to try 
+### Manually:
+
+1. Navigate to the graph you want to try
 2. Create a new variant with your desired name
-3. Copy over your subgraphs from whatever is your main or production variant. 
-  a. You can do this in the Subgraphs tab with the “Add Subgraph” button
-  b. You will need to paste in the URL and schema for each subgraph you add
+3. Copy over your subgraphs from whatever is your main or production variant.
+   * You can do this in the Subgraphs tab with the “Add Subgraph” button
+   * You will need to paste in the URL and schema for each subgraph you add
 
-## Setup API
+## Setting up `.env` files
 
-Depends on which use case we're using
+Before running this project, you must create appropriate `.env` files in the
+root `graphchat/` directory as well as each of the `graphchat/graphs/*`
+directories. For guidance, see the corresponding `.env.example` files in those
+locations.
 
-## Setup for your graph
+## Ingesting data into MongoDB
 
-1. Generate PQs
-  a. Most chatbots are integrated into the website, so start with the websites functionality
-  b. Example - Generate manifest from `shopify-store-website` repository which is a folder of operations - this is the bot functionality
-    i. Your PQ list might contain `mutations`, if you want to start with just query operations for read-only functionality, run this script to remove all of the `type:mutation` form the manifest before you publish it
-    ii. Publish to GraphOS variant
-  c. If you want to just use an existing PQ list, navigate to the PQ list in GraphOS and download the JSON file
-2. Embed PQ manifest (JSON file) into a vector db for the chatbot to perform vector searches	
-  a. We’re using Mongo Atlas because it’s a simple one click, but you could use something like PGVector with Postgres
-  b. Along with the embeddings, we extract the  required variables from each PQ to be stored with the embeddings
-3. Run a router instance pointing at your `chatbot` PQ list with safelisting configuration on
-4. Run the Mongo-chatbot-based template and set the environment variables to your stuff:
-  a. ROUTER_URL <- where the chatbot should send the PQ requests
-  b. CONNECTION_STRING <- the connection string to Mongo Atlas
-    i. If using Postgres, you’ll need to modify the code to use something like Langchain instead of the mongo provided packages
-  c. OPENAI_API_KEY <- we’re using OpenAI for the LLM and embeddings so we don’t have to host a model, but you can modify the code to use something like Langchain with Ollama or Hugging Face.
-5. Navigate to localhost:3000
-6. Ask questions!
+```bash
+# (Re)generate all the graphs/*/operation-manifest.json files
+npm run pq:manifest
+
+# (Re)generate just graphs/shopify/operation-manifest.json
+npm run pq:manifest shopify
+
+# Ingest all the graphs/*/operation-manifest.json files into MongoDB Atlas
+npm run pq:ingest
+```
+
+## (Re)publishing persisted queries to GraphOS
+
+```bash
+# Publish all the graphs/*/operation-manifest.json files to GraphOS
+npm run pq:publish
+
+# Publish just graphs/shopify/operation-manifest.json to GraphOS
+npm run pq:publish shopify
+```
+
+## Running the project
+
+Once you have performed the above steps, you can run the router(s) with the
+following command:
+
+```bash
+npm run pq:router
+```
+
+Finally, you can start the GraphChat server and UI with the following command:
+
+```bash
+npm run dev
+```
+
+## Deploying to production
+
+TODO

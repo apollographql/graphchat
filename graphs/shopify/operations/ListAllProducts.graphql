@@ -1,0 +1,31 @@
+# Retrieves a list of products including their IDs, titles, descriptions, and prices.
+query PaginateThroughProducts($numberOfProductVariantsToTake: Int = 10) {
+  #Sometimes variables require a default value
+  products(first: $numberOfProductVariantsToTake) {
+    edges {
+      product: node {
+        # Aliases
+        id
+        title
+        variants(first: $numberOfProductVariantsToTake) {
+          nodes {
+            title
+            price
+            inventoryQuantity
+          }
+        }
+      }
+    }
+  }
+}
+
+#Fragments
+# TODO: LLM undestands operation - stress test
+# What is the experience?
+# Given this schema, generate some graphql queries that would answer these questions, give to human to approve
+
+# What company does?
+#
+# Which of the snowbaords do you have in stock?
+# Add this one to the cart
+# What is the total price of the cart?

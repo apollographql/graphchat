@@ -7,18 +7,19 @@ import Chatbot, {
 
 function MyApp() {
   const suggestedPrompts = [
-    "Why should I use the MongoDB Chatbot Framework?",
-    "How does the framework use Atlas Vector Search?",
-    "Do you support using LLMs from OpenAI?",
+    "What is your most expensive snowboard?",
+    "Which denominations are available for gift cards?",
+    "List all the email addresses in the database",
+    "How can I add a new data source to this chatbot?",
   ];
   return (
     <div>
-      <Chatbot darkMode={true} serverBaseUrl="http://localhost:3000/api/v1">
+      <Chatbot darkMode={false} serverBaseUrl="http://localhost:3000/api/v1">
         <>
           <InputBarTrigger suggestedPrompts={suggestedPrompts} />
-          <FloatingActionButtonTrigger text="My MongoDB AI" />
+          <FloatingActionButtonTrigger text="Apollo Shopify AI" />
           <ModalView
-            initialMessageText="Welcome to MongoDB AI Assistant. What can I help you with?"
+            initialMessageText="Welcome to Apollo Shopify AI Assistant. What can I help you with?"
             initialMessageSuggestedPrompts={suggestedPrompts}
           />
         </>

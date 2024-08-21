@@ -1,0 +1,42 @@
+{
+  "format": "apollo-persisted-query-manifest",
+  "version": 1,
+  "operations": [
+    {
+      "id": "55f1f9d1b1ae06672425abf70fc3d808214f136317e3f6185029b4910b192167",
+      "name": "CheckoutLineItems",
+      "type": "query",
+      "body": "# Fetches the line items for a specific abandoned checkout, including custom attributes and discounted total prices.\nquery CheckoutLineItems($checkoutId: ID!) {\n  abandonedCheckout(id: $checkoutId) {\n    lineItems(first: 10) {\n      edges {\n        node {\n          id\n          customAttributes {\n            key\n            value\n            __typename\n          }\n          discountedTotalPriceSet\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "id": "c1a598b9f350bfacc65382b51232543e463645438e4fc1ddb8ee68b88a4aec30",
+      "name": "CustomerOrders",
+      "type": "query",
+      "body": "# Fetches the orders associated with a specific customer, including order IDs, total prices, and statuses.\nquery CustomerOrders($customerId: ID!) {\n  customer(id: $customerId) {\n    orders(first: 10) {\n      edges {\n        node {\n          id\n          totalPriceSet {\n            shopMoney {\n              amount\n              currencyCode\n              __typename\n            }\n            __typename\n          }\n          fulfillments {\n            status\n            __typename\n          }\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "id": "2acc1fd569e109bb7a786bbf80aa4f41f9e595e5b9381cd5143d1e42966470c0",
+      "name": "GetProduct",
+      "type": "query",
+      "body": "# Retrieves the details of a product by its ID, including the title, description, and price range.\nquery GetProduct($productId: ID!) {\n  product(id: $productId) {\n    id\n    title\n    description\n    priceRangeV2 {\n      maxVariantPrice {\n        amount\n        currencyCode\n        __typename\n      }\n      minVariantPrice {\n        amount\n        currencyCode\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "id": "d454f6ce1d77f2c739e65a930f8627a1bc2f2a140d492321ccfb15332c7e4229",
+      "name": "ListCustomers",
+      "type": "query",
+      "body": "# Retrieves a list of customers including their IDs, first names, last names, and email addresses.\nquery ListCustomers($first: Int) {\n  customers(first: $first) {\n    edges {\n      node {\n        id\n        firstName\n        lastName\n        email\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "id": "74f0a8d0fd9762d6461a2b2c2a0149ed0b48e96e8391092eca5cb6e17f7ba443",
+      "name": "PaginateThroughProducts",
+      "type": "query",
+      "body": "# Retrieves a list of products including their IDs, titles, descriptions, and prices.\nquery PaginateThroughProducts($numberOfProductVariantsToTake: Int = 10) {\n  products(first: $numberOfProductVariantsToTake) {\n    edges {\n      product: node {\n        id\n        title\n        variants(first: $numberOfProductVariantsToTake) {\n          nodes {\n            title\n            price\n            inventoryQuantity\n            __typename\n          }\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "id": "90def85b95ff60e7f9047ac3d934fef13a7933bc2b055169f10d5da05ac7e86c",
+      "name": "RetrieveAbandonedCheckouts",
+      "type": "query",
+      "body": "# Retrieves a list of abandoned checkouts including their IDs, recovery URLs, and total prices.\nquery RetrieveAbandonedCheckouts {\n  abandonedCheckouts(first: 10) {\n    edges {\n      node {\n        id\n        abandonedCheckoutUrl\n        totalPriceSet\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}"
+    }
+  ]
+}
