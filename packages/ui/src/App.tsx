@@ -17,7 +17,7 @@ function MyApp() {
       <Chatbot darkMode={false} serverBaseUrl="http://localhost:3000/api/v1">
         <>
           <InputBarTrigger suggestedPrompts={suggestedPrompts} />
-          <FloatingActionButtonTrigger text="Apollo Shopify AI" />
+          <FloatingActionButtonTrigger text="Apollo GraphChat" />
           <ModalView
             initialMessageText="Welcome to Apollo Shopify AI Assistant. What can I help you with?"
             initialMessageSuggestedPrompts={suggestedPrompts}
