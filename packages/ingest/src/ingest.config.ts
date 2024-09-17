@@ -54,7 +54,7 @@ export default {
   }),
   // Add data sources here
   dataSources: async () => [
-    await mongoDbChatbotFrameworkDocsDataSourceConstructor(),
+    // await mongoDbChatbotFrameworkDocsDataSourceConstructor(),
     await persistedQueryDataSource(),
   ],
 } satisfies Config;
