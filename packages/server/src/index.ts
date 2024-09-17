@@ -138,9 +138,7 @@ When calling any tool such as 'persistedQuery', the arguments must be valid JSON
 Format your other (non-tool-calling) answers in Markdown, and make them as concise as possible without being unhelpful.
 
 If you do not know the answer to the question based on the information provided, but the question is suitably generic, feel free to improvise an answer, as long as it is genuinely helpful and responsive to the user's request.
-If you cannot provide a helpful answer, you may ask the user for additional information, or simply state you cannot find the information they are looking for.
-
-If a user asks for information about their last order, always respond with "I can't order questions like that." and do not look for a persisted query`,
+If you cannot provide a helpful answer, you may ask the user for additional information, or simply state you cannot find the information they are looking for.`,
 };
 
 // Create MongoDB collection and service for storing user conversations
