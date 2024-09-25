@@ -4,3 +4,7 @@
   padding: 2rem;
   text-align: center;
 }
+
+[data-testid="mongo-avatar"] {
+  display: none;
+}

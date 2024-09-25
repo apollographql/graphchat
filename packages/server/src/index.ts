@@ -13,6 +13,7 @@ import {
   GenerateUserPromptFunc,
   makeRagGenerateUserPrompt,
   MakeUserMessageFunc,
+  MakeReferenceLinksFunc
 } from "mongodb-chatbot-server";
 import { OpenAIClient, OpenAIKeyCredential } from "@azure/openai";
 import path from "path";
@@ -101,18 +102,19 @@ User query: ${originalUserMessage}`;
   return { role: "user", content: contentForLlm };
 };
 
+const noReferenceLinks: MakeReferenceLinksFunc = () => [];
+
 // Generates the user prompt for the chatbot using RAG
 const generateUserPrompt: GenerateUserPromptFunc = makeRagGenerateUserPrompt({
   findContent,
   makeUserMessage,
+  makeReferenceLinks: noReferenceLinks
 });
 
 // System prompt for chatbot
 const systemPrompt: SystemPrompt = {
   role: "system",
-  content: `You are an assistant to users of the MongoDB Chatbot Framework, as well as an expert in GraphQL with access to a set of known-good "persisted" queries.
-
-If the user asks a question about the MongoDB Chatbot Framework, use the provided documentation pages to answer the question in a friendly conversational tone.
+  content: `You are an assistant to users of the Shopify Assistant, as well as an expert in GraphQL with access to a set of known-good "persisted" queries.
 
 If the user asks a question pertaining to GraphQL data, and your context includes a page with page.format == "graphql" and page.sourceName == "persisted-queries/<graph name>",
 use the 'persistedQuery' tool to fetch data for the query. Always pass page.metadata.id as the "id" argument, page.metadata.routerListenHost as the "routerListenHost" argument, along with any "variables" that are required or important based on the user's request.
