@@ -9,6 +9,7 @@ import path from "path";
 import { loadEnvVars } from "./loadEnvVars";
 import { mongoDbChatbotFrameworkDocsDataSourceConstructor } from "./mongodbChatbotFrameworkDataSource";
 import { persistedQueryDataSource } from "./persistedQueryDataSource";
+import { MongoClient } from "mongodb";
 
 // Load project environment variables
 const dotenvPath = path.join(__dirname, "..", "..", "..", ".env"); // .env at project root
@@ -33,12 +34,20 @@ export default {
       },
     });
   },
-  embeddedContentStore: () =>
-    makeMongoDbEmbeddedContentStore({
+  embeddedContentStore: async () => {
+    const embeddedContentStore = makeMongoDbEmbeddedContentStore({
       connectionUri: MONGODB_CONNECTION_URI,
       databaseName: MONGODB_DATABASE_NAME,
-    }),
-  pageStore: () =>
+    });
+
+    const client = new MongoClient(MONGODB_CONNECTION_URI)
+    await client.connect();
+    await client.db(MONGODB_DATABASE_NAME).collection('embedded_content').deleteMany({});
+    await client.close();
+
+    return embeddedContentStore;
+  },
+  pageStore: () => 
     makeMongoDbPageStore({
       connectionUri: MONGODB_CONNECTION_URI,
       databaseName: MONGODB_DATABASE_NAME,
