@@ -7,7 +7,6 @@ import {
 import { standardChunkFrontMatterUpdater } from "mongodb-rag-ingest/embed";
 import path from "path";
 import { loadEnvVars } from "./loadEnvVars";
-import { mongoDbChatbotFrameworkDocsDataSourceConstructor } from "./mongodbChatbotFrameworkDataSource";
 import { persistedQueryDataSource } from "./persistedQueryDataSource";
 import { MongoClient } from "mongodb";
 
@@ -63,7 +62,6 @@ export default {
   }),
   // Add data sources here
   dataSources: async () => [
-    await mongoDbChatbotFrameworkDocsDataSourceConstructor(),
     await persistedQueryDataSource(),
   ],
 } satisfies Config;
