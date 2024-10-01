@@ -6,8 +6,5 @@ query GetProduct($productId: ID!) {
     images {
       hero
     }
-    price {
-      unitAmount
-    }
   }
 }

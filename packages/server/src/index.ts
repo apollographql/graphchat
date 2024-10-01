@@ -165,7 +165,7 @@ const config: AppConfig = {
   maxRequestTimeoutMs: 30000,
   serveStaticSite: true,
 };
-// logger.silent = true;
+logger.silent = true;
 // Start the server and clean up resources on SIGINT.
 const PORT = process.env.PORT || 3000;
 const startServer = async () => {
