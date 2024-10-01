@@ -1,0 +1,21 @@
+supergraph:
+  listen: 127.0.0.1:4000
+
+headers:
+  all:
+    request:
+      - propagate:
+          matching: .*
+preview_connectors:
+  subgraphs:
+    connector:
+      $config:
+        stripe: ${env.STRIPE_SECRET_KEY}
+        strapi: ${env.STRAPI_SECRET_KEY}
+
+persisted_queries:
+  enabled: true
+  safelist:
+    enabled: true
+apq:
+  enabled: false

@@ -1,0 +1,10 @@
+# Retrieves a list of products including their name and hero images.
+query ListAllProducts {
+  products {
+    id
+    name
+    images {
+      hero
+    }
+  }
+}

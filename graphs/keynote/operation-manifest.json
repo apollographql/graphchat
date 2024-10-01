@@ -1,0 +1,18 @@
+{
+  "format": "apollo-persisted-query-manifest",
+  "version": 1,
+  "operations": [
+    {
+      "id": "4ffa4ff5905fbbfb015712414f0b38fecc0768dcaf6d0b80bf65542c1b0a2427",
+      "name": "GetProduct",
+      "type": "query",
+      "body": "# Retrieves the details of a product by its ID, including the name, description, and hero image.\nquery GetProduct($productId: ID!) {\n  product(id: $productId) {\n    name\n    description\n    images {\n      hero\n      __typename\n    }\n    price {\n      unitAmount\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "id": "410b51f9667052675a187a2c0093abbf3b61084bcb9f44edf2366a8d450fe855",
+      "name": "ListAllProducts",
+      "type": "query",
+      "body": "# Retrieves a list of products including their name and hero images.\nquery ListAllProducts {\n  products {\n    id\n    name\n    images {\n      hero\n      __typename\n    }\n    __typename\n  }\n}"
+    }
+  ]
+}

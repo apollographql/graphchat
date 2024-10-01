@@ -7,10 +7,7 @@ import Chatbot, {
 
 function MyApp() {
   const suggestedPrompts = [
-    "What is your most expensive snowboard?",
-    "Which denominations are available for gift cards?",
-    "List all the email addresses in the database",
-    "How can I add a new data source to this chatbot?",
+    "What products do you sell?",
   ];
   return (
     <div>

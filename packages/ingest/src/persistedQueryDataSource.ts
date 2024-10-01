@@ -23,6 +23,7 @@ export async function persistedQueryDataSource(): Promise<DataSource> {
       const pages: Page[] = [];
 
       for (const graphDirName of readdirSync(graphsDir)) {
+        if(graphDirName.includes(".DS")) continue;
         const graphDir = path.join(graphsDir, graphDirName);
         const manifestPath = path.join(graphDir, "operation-manifest.json");
         const manifest = JSON.parse(readFileSync(manifestPath, "utf-8"));
