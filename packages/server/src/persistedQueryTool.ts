@@ -51,13 +51,10 @@ export const persistedQueryTool: Tool = {
       variables: Record<string, any>;
     };
   }): Promise<CallToolResponse> {
-    await log(
-      `Fetching persisted query with id ${
-        args.id
-      } and variables ${JSON.stringify(args.variables, null, 2)} from ${
-        args.routerListenHost
-      }`
-    );
+    await log(`Fetching persisted query with id ${args.id}`);
+
+    if (args.variables)
+      await log(`Variables: ${JSON.stringify(args.variables, null, 2)}`);
 
     const body: {
       extensions: Record<string, any>;
@@ -74,7 +71,8 @@ export const persistedQueryTool: Tool = {
       body.variables = args.variables;
     }
 
-    return await fetch('https://router-chatbot-production.up.railway.app/',{//`http://${args.routerListenHost}`, {
+    return await fetch("https://router-chatbot-production.up.railway.app/", {
+      //`http://${args.routerListenHost}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -84,27 +82,37 @@ export const persistedQueryTool: Tool = {
       .then((response) => response.json())
       .then(
         (result) => {
+          if (!result.data) console.log(JSON.stringify(result));
           let data = result.data;
           removeTypenamme(data);
           collapseEdgesAndNodes(data);
           collapseEmptyArrays(data);
           getCollapsed(data);
 
-          if (data?.products) {
-            data?.products.forEach((p: any) => {
+          if (data?.products || data?.search) {
+            const products = data?.products ?? data?.search;
+            products.forEach((p: any) => {
               if (p.images.hero)
-                p.images.hero = "https://keynote-strapi-production.up.railway.app" + p.images.hero;
-              if(p.images.thumbnail)
-                p.images.thumbnail = "https://keynote-strapi-production.up.railway.app" + p.images.thumbnail;
+                p.images.hero =
+                  "https://keynote-strapi-production.up.railway.app" +
+                  p.images.hero;
+              if (p.images.thumbnail)
+                p.images.thumbnail =
+                  "https://keynote-strapi-production.up.railway.app" +
+                  p.images.thumbnail;
             });
           } else if (data?.product) {
-              if (data?.product.images.hero)
-                data.product.images.hero = "https://keynote-strapi-production.up.railway.app" + data.product.images.hero;
-              if(result.data?.product.images.thumbnail)
-                data.product.images.thumbnail = "https://keynote-strapi-production.up.railway.app" + data.productimages.thumbnail;
+            if (data?.product.images.hero)
+              data.product.images.hero =
+                "https://keynote-strapi-production.up.railway.app" +
+                data.product.images.hero;
+            if (result.data?.product.images.thumbnail)
+              data.product.images.thumbnail =
+                "https://keynote-strapi-production.up.railway.app" +
+                data.productimages.thumbnail;
           }
 
-          data = JSON.stringify(data, null, 2)
+          data = JSON.stringify(data, null, 2);
 
           log(`Got persisted query result: ${data}`);
 
@@ -146,30 +154,35 @@ function collapseEmptyArrays(obj: any) {
 }
 
 function collapseEdgesAndNodes(obj: any): any {
-  if (obj instanceof Array) {
-    for (let i = 0; i < obj.length; i++) {
-      obj[i] = collapseEdgesAndNodes(JSON.parse(JSON.stringify(obj[i])));
-    }
-
-    return obj;
-  } else if (typeof obj === "object") {
-    const keys = Object.keys(obj);
-
-    if (
-      keys.length === 1 &&
-      (keys[0] === "edges" || keys[0] === "node" || keys[0] === "nodes")
-    ) {
-      console.log(obj[keys[0]]);
-      return collapseEdgesAndNodes(obj[keys[0]]);
-    } else {
-      for (let i = 0; i < keys.length; i++) {
-        const key = keys[i];
-
-        if (typeof obj[key] === "object")
-          obj[key] = collapseEdgesAndNodes(obj[key]);
+  try {
+    if (!obj) {
+    } else if (obj instanceof Array) {
+      for (let i = 0; i < obj.length; i++) {
+        obj[i] = collapseEdgesAndNodes(JSON.parse(JSON.stringify(obj[i])));
       }
-    }
 
+      return obj;
+    } else if (typeof obj === "object") {
+      const keys = Object.keys(obj);
+
+      if (
+        keys.length === 1 &&
+        (keys[0] === "edges" || keys[0] === "node" || keys[0] === "nodes")
+      ) {
+        console.log(obj[keys[0]]);
+        return collapseEdgesAndNodes(obj[keys[0]]);
+      } else {
+        for (let i = 0; i < keys.length; i++) {
+          const key = keys[i];
+
+          if (typeof obj[key] === "object")
+            obj[key] = collapseEdgesAndNodes(obj[key]);
+        }
+      }
+
+      return obj;
+    }
+  } catch (err) {
     return obj;
   }
 }
