@@ -47,7 +47,7 @@ ensureRouterDownloaded().then(routerPath => {
     return new Promise<number>((resolve, reject) => {
       const process = spawn(routerPath, [
         "--config", "router.yaml",
-        "--dev",
+        "--apollo-uplink-poll-interval", "10s"
       ], {
         stdio: "inherit",
         cwd: graphDir,

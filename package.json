@@ -10,6 +10,7 @@
     "pq:manifest": "ts-node scripts/manifest.ts",
     "pq:ingest": "npm run ingest:all --workspace=ingest",
     "pq:publish": "ts-node scripts/publish-pqs.ts",
+    "pq:push": "npm run pq:manifest && npm run pq:ingest && npm run pq:publish",
     "pq:router": "ts-node scripts/router.ts",
     "dev": "npm run dev --workspace=server & npm run dev --workspace=ui"
   },
