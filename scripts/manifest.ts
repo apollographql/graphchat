@@ -52,6 +52,10 @@ function generate(graphDir: string) {
   }
 
   for (const opFile of readdirSync(operationsDir)) {
+    if (!opFile.includes('.graphql')) {
+      return
+    }
+    
     const opPath = path.join(operationsDir, opFile);
     const opSource = readFileSync(opPath, "utf-8");
     const ast = parseGraphQL(opSource);
