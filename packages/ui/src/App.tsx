@@ -16,7 +16,7 @@ function MyApp() {
           <InputBarTrigger suggestedPrompts={suggestedPrompts} />
           <FloatingActionButtonTrigger text="Apollo GraphChat" />
           <ModalView
-            initialMessageText="Welcome to Apollo Shopify AI Assistant. What can I help you with?"
+            initialMessageText="Welcome to Apollo AI Assistant. What can I help you with?"
             initialMessageSuggestedPrompts={suggestedPrompts}
           />
         </>

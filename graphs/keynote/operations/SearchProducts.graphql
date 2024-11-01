@@ -1,0 +1,11 @@
+# Search snowboards in our product catalog
+query SearchProducts($for: String!) {
+  search(for: $for) {
+    name
+    image
+    price {
+      currency
+      amount
+    }
+  }
+}

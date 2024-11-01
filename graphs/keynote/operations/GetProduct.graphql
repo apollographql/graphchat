@@ -2,9 +2,10 @@
 query GetProduct($productId: ID!) {
   product(id: $productId) {
     name
-    description
-    images {
-      hero
+    image
+    price {
+      currency
+      amount
     }
   }
 }

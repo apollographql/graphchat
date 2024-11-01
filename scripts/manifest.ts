@@ -30,7 +30,7 @@ function generate(graphDir: string) {
     "npx",
     [
       "generate-persisted-query-manifest",
-      "--config", "pq-config.json",
+      "--config", "persisted-query-manifest.config.ts",
     ],
     {
       stdio: "inherit",
@@ -53,6 +53,7 @@ function generate(graphDir: string) {
 
   for (const opFile of readdirSync(operationsDir)) {
     const opPath = path.join(operationsDir, opFile);
+    if(!opPath.includes('.graphql')) continue
     const opSource = readFileSync(opPath, "utf-8");
     const ast = parseGraphQL(opSource);
 
