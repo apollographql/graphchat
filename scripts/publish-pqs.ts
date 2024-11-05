@@ -23,13 +23,14 @@ function publish(graphDir: string) {
   const envPath = path.join(graphDir, ".env");
   const envText = readFileSync(envPath, "utf-8");
   const {
+    APOLLO_KEY,
     APOLLO_GRAPH_REF,
   } = dotenv.parse(envText);
 
   console.log("Publishing persisted queries for", path.relative(rootDir, graphDir));
 
   spawnSync(
-    "rover",
+    `APOLLO_KEY=${APOLLO_KEY} rover`,
     [
       "persisted-queries",
       "publish",
