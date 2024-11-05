@@ -35,10 +35,11 @@ function publish(graphDir: string) {
       "persisted-queries",
       "publish",
       APOLLO_GRAPH_REF,
-      "--manifest", "operation-manifest.json",
+      "--manifest", `operation-manifest.json`,
       "--profile", path.basename(graphDir),
     ],
     {
+      shell: true,
       stdio: "inherit",
       cwd: graphDir,
     }
