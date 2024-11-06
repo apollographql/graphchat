@@ -1,0 +1,11 @@
+# Retrieves the details of a product by its ID, including the name, description, and hero image.
+query GetProduct($productId: ID!) {
+  product(id: $productId) {
+    name
+    image
+    price {
+      currency
+      amount
+    }
+  }
+}

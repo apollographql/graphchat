@@ -1,0 +1,100 @@
+extend schema
+  @link(url: "https://specs.apollo.dev/federation/v2.10")
+  @link(url: "https://specs.apollo.dev/connect/v0.1",import: ["@source", "@connect"])
+  @source(
+    name: "strapi"
+    http: { 
+      baseURL: "https://keynote-strapi-production.up.railway.app"
+      headers: [{ name: "Authorization", value: "Bearer {$config.strapi}" }]
+    }
+  )
+  @source(
+    name: "stripe"
+    http: { 
+      baseURL: "https://api.stripe.com/v1"
+      headers: [
+        { name: "Authorization", value: "Bearer {$config.stripe}" }
+        { name: "Stripe-Version", value: "2024-06-20" }
+        { name: "Content-Type", value: "application/x-www-form-urlencoded" }
+      ]
+    }
+  )
+
+type Price {
+  id: ID!
+  active: Boolean
+  currency: String
+  amount: Float
+}
+
+type Product {
+  id: ID!
+  name: String
+  description: String
+  image: String
+  price: Price @connect(
+    source: "stripe"
+    http: { GET: "/products/{$this.id}"}
+    selection: """
+    id: default_price
+    """
+  )
+}
+
+type Query {
+  search(for: String!): [Product]
+    @connect(
+      source: "strapi"
+      http: { GET: "/api/products?filters[name][$contains]={$args.for}"}
+      selection: """
+        $.data {
+          $.attributes {
+            id: product_id
+            name
+            description
+          }
+        }
+      """
+    )
+  price(id: ID!): Price
+    @connect(
+      source: "stripe"
+      http: { GET: "/prices/{$args.id}"}
+      selection: """
+        id
+        active
+        currency
+        amount: unit_amount
+      """
+      entity: true
+    )
+  products(start: Int = 0, limit: Int = 3): [Product] @connect(
+    source: "strapi"
+    http: { GET: "/api/products?pagination[start]={$args.start}&pagination[limit]={$args.limit}&populate=hero" }
+    selection: """
+      $.data {
+        $.attributes {
+          id: product_id 
+          name
+          description
+          image: hero.data.attributes.formats.thumbnail.url
+        }
+      }
+    """
+  )
+  product(id: ID!): Product @connect(
+    source: "strapi"
+    http: { GET: "/api/products?filters[product_id][$eq]={$args.id}&populate=hero" }
+    entity: true
+    selection: """
+      $.data -> first {
+        $.attributes {
+          id: product_id
+          name
+          description
+          image: hero.data.attributes.formats.thumbnail.url
+        }
+      }
+    """
+  )
+}

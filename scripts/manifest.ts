@@ -7,21 +7,11 @@ import { readFileSync, readdirSync, writeFileSync, statSync } from "node:fs";
 import { parse as parseGraphQL } from "graphql";
 
 const rootDir = path.dirname(__dirname);
-const graphsDir = path.join(rootDir, "graphs");
+const graphDir = path.join(rootDir,"graph");
 
-const graphDirNames = process.argv.slice(2);
-if (!graphDirNames.length) {
-  graphDirNames.push(...readdirSync(graphsDir));
-}
+generate();
 
-graphDirNames.forEach(graphDirName => {
-  const graphDir = path.join(graphsDir, graphDirName);
-  if (statSync(graphDir).isDirectory()) {
-    generate(graphDir);
-  }
-});
-
-function generate(graphDir: string) {
+function generate() {
   const manifestPath = path.join(graphDir, "operation-manifest.json");
 
   console.log("Generating operation-manifest.json for", path.relative(rootDir, graphDir));
@@ -30,7 +20,7 @@ function generate(graphDir: string) {
     "npx",
     [
       "generate-persisted-query-manifest",
-      "--config", "pq-config.json",
+      "--config", "operation-manifest.config.ts",
     ],
     {
       stdio: "inherit",

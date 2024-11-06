@@ -5,28 +5,19 @@ import { spawnSync } from "node:child_process";
 import dotenv from "dotenv";
 
 const rootDir = path.dirname(__dirname);
-const graphsDir = path.join(rootDir, "graphs");
+const graphDir = path.join(rootDir, "graph");
 
-const graphDirNames = process.argv.slice(2);
-if (!graphDirNames.length) {
-  graphDirNames.push(...readdirSync(graphsDir));
-}
+publish();
 
-graphDirNames.forEach(graphDirName => {
-  const graphDir = path.join(graphsDir, graphDirName);
-  if (statSync(graphDir).isDirectory()) {
-    publish(graphDir);
-  }
-});
-
-function publish(graphDir: string) {
+function publish() {
   const envPath = path.join(graphDir, ".env");
   const envText = readFileSync(envPath, "utf-8");
-  const {
-    APOLLO_GRAPH_REF,
-  } = dotenv.parse(envText);
+  const { APOLLO_GRAPH_REF, APOLLO_KEY } = dotenv.parse(envText);
 
-  console.log("Publishing persisted queries for", path.relative(rootDir, graphDir));
+  console.log(
+    "Publishing persisted queries for",
+    path.relative(rootDir, graphDir)
+  );
 
   spawnSync(
     "rover",
@@ -34,12 +25,15 @@ function publish(graphDir: string) {
       "persisted-queries",
       "publish",
       APOLLO_GRAPH_REF,
-      "--manifest", "operation-manifest.json",
-      "--profile", path.basename(graphDir),
+      "--manifest",
+      "operation-manifest.json",
     ],
     {
       stdio: "inherit",
       cwd: graphDir,
+      env: {
+        "APOLLO_KEY": APOLLO_KEY
+      }
     }
   );
 }

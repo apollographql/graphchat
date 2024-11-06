@@ -10,7 +10,7 @@
     "pq:manifest": "ts-node scripts/manifest.ts",
     "pq:ingest": "npm run ingest:all --workspace=ingest",
     "pq:publish": "ts-node scripts/publish-pqs.ts",
-    "pq:router": "ts-node scripts/router.ts",
+    "pq:router": "APOLLO_ROVER_DEV_ROUTER_VERSION=2.0.0-preview.0.0 rover dev --supergraph-config graph/supergraph.yaml --router-config graph/router.yaml",
     "dev": "npm run dev --workspace=server & npm run dev --workspace=ui"
   },
   "author": "",
