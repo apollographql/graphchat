@@ -1,6 +1,0 @@
-{
-    "documents": [
-      "operations/**/*.{graphql,gql,js,jsx,ts,tsx}"
-    ],
-    "output": "operation-manifest.json"
-  }

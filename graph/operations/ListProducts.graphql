@@ -1,0 +1,8 @@
+# A list of all our putters for golf in our catalog
+query ListAllProducts {
+  products {
+    id
+    name
+    image
+  }
+}
