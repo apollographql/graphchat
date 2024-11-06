@@ -1,24 +1,5 @@
 {
   "format": "apollo-persisted-query-manifest",
   "version": 1,
-  "operations": [
-    {
-      "id": "GetProduct",
-      "name": "GetProduct",
-      "type": "query",
-      "body": "# Retrieves the details of a product by its ID, including the name, description, and hero image.\nquery GetProduct($productId: ID!) {\n  product(id: $productId) {\n    name\n    image\n    price {\n      currency\n      amount\n      __typename\n    }\n    __typename\n  }\n}"
-    },
-    {
-      "id": "ListAllProducts",
-      "name": "ListAllProducts",
-      "type": "query",
-      "body": "# A list of all our snowboards in our catalog\nquery ListAllProducts {\n  products {\n    id\n    name\n    image\n    __typename\n  }\n}"
-    },
-    {
-      "id": "SearchProducts",
-      "name": "SearchProducts",
-      "type": "query",
-      "body": "# Search snowboards in our product catalog\nquery SearchProducts($for: String!) {\n  search(for: $for) {\n    name\n    image\n    price {\n      currency\n      amount\n      __typename\n    }\n    __typename\n  }\n}"
-    }
-  ]
+  "operations": []
 }

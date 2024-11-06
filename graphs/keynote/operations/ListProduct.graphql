@@ -1,8 +1,0 @@
-# A list of all our snowboards in our catalog
-query ListAllProducts {
-  products {
-    id
-    name
-    image
-  }
-}
